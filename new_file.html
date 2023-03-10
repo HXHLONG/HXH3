@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>文件</title>
+		<script src="js/jQuery3.4.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body style="background-image: url();">
+		<input type="file" name="file" id="infile" multiple accept="image/*" style="width: 480px;" />
+		<button type="button" onclick="genghuanba()" >更换背景</button>
+		<div id='app' style="opacity: 0.8;">
+			<div v-for="(item,index) in filesList" v-if="noon == true"
+				style="width: 420px;height: 380px;margin: 20px 24px;font-size: 12px;float: left;">
+				<p>名字：{{item.name}}</p>
+				<p>大小：{{Math.floor(item.size/10000)/100}} MB &nbsp;&nbsp;&nbsp;&nbsp; 类型：{{item.type}}</p>
+				<!-- <p>url：{{item.imagesss}}</p> -->
+				<img style="width: 90%;" :src="item.imagesss" />
+				<p>上传时间：{{item.lastModifiedDate}}</p>
+
+			</div>
+			<!-- <img :src="imagesss" > -->
+			<!-- <img style="width: 90%;" src="" id="upload"/> -->
+			<!-- <input type="image" src="." /> -->
+		</div>
+	</body>
+	<script type="text/javascript">
+		Vue.config.productionTip = false;
+		const Dsp = new Vue({
+					el: '#app', //找到容器
+					data() {
+						return {
+							noon: false,
+							filesList: [{
+								name: '',
+								size: '',
+								type: '',
+								lastModifiedDate: '',
+								imagesss: ''
+							}],
+
+						}
+					}
+					
+					});
+				var infile = document.getElementById('infile');
+				var backgroundImg = document.querySelector('body'); 
+				infile.oninput = function(e) {
+					Dsp.noon = true;
+					Dsp.filesList = infile.files;
+					console.log(infile.files);
+					// console.log(infile.value);
+					for (let i = 0; i < infile.files.length; i++) {
+						// Dsp.filesList[i].imagesss = "D:\\图片\\A精品图片\\" + infile.files[i].name;
+
+						/**
+						 * 通过window.URL.createObjectURL创建url。通过该方法可以为file实例创建一个临时的url，img可以通过该url将图片加载出来。由于是临时的url，因此同一个file实例，每次创建的url					都会不一样
+						 * **/
+						var filesrcs = infile.files[i];
+						var urls = window.URL.createObjectURL(filesrcs);
+						// console.log(urls);
+						Dsp.filesList[i].imagesss = urls;
+					}
+					
+					console.log(backgroundImg.style.backgroundImage);
+				}
+				 function genghuanba(){
+					backgroundImg.style.backgroundImage = "url("+ Dsp.filesList[0].imagesss+")";
+				}
+	</script>
+</html>
